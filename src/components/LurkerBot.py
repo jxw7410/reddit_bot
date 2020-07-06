@@ -5,9 +5,6 @@ from services.SiteRegex import SiteRegex
 from services.SubParser import SubParser
 
 class LurkerBotBeta:
-  BOT_NAME = 'lurker-bot-beta'
-  USER_AGENT = 'lurker-bot-beta v.0.0.1'
-
   def __init__(self, config, subreddit_name):
     self.reddit = praw.Reddit(client_id=config['client_id'],
                               client_secret=config['client_secret'],
