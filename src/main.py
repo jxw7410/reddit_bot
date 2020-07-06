@@ -2,8 +2,8 @@ import config as cfg
 
 from lurker_bot import LurkerBotBeta
 
-subreddit = 'all'
+subreddit = 'personalspacefordev'
 
 bot = LurkerBotBeta(cfg.reddit, subreddit)
 
-bot.get_submissions()
+bot.run()
