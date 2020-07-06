@@ -1,10 +1,8 @@
 import praw
 import time
 
-from site_regex import SiteRegex
-
-
-from sub_parser import SubParser
+from SiteRegex import SiteRegex
+from SubParser import SubParser
 
 class LurkerBotBeta:
   BOT_NAME = 'lurker-bot-beta'

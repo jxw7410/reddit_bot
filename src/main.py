@@ -1,9 +1,11 @@
 import config as cfg
+from LurkerBot import LurkerBotBeta
 
-from lurker_bot import LurkerBotBeta
+def main():
+  subreddit = 'personalspacefordev'
+  
+  bot = LurkerBotBeta(cfg.reddit, subreddit)
+  bot.run()
 
-subreddit = 'personalspacefordev'
-
-bot = LurkerBotBeta(cfg.reddit, subreddit)
-
-bot.run()
+if __name__ == '__main__':
+  main()
