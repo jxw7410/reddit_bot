@@ -21,10 +21,12 @@ class LurkerBotBeta:
 
 
   def run(self):
-    self.check_new_submissions()
-    # while True:
-    #   self.check_new_submissions()
-    #   time.sleep(2)
+    if self.is_logged_in() is None: 
+      return
+
+    while True:
+      self.check_new_submissions()
+      time.sleep(2)
 
 
   def check_new_submissions(self): 
@@ -71,6 +73,8 @@ class LurkerBotBeta:
     
     return self.config['username'] in comment_authors
 
-  # For credential testing
   def is_logged_in(self):
-    print(f'{self.reddit.user.me()} is logged in')
+    try:
+      return self.reddit.user.me()
+    except: 
+      return None
