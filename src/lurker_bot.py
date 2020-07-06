@@ -1,6 +1,11 @@
 import praw
 import time
 
+from site_regex import SiteRegex
+
+
+from sub_parser import SubParser
+
 class LurkerBotBeta:
   BOT_NAME = 'lurker-bot-beta'
   USER_AGENT = 'lurker-bot-beta v.0.0.1'
@@ -12,30 +17,61 @@ class LurkerBotBeta:
                               password=config['password'],
                               user_agent=config['user_agent'])
 
+    self.config = config
     self.subreddit_name = subreddit_name
     self.prev_post_ids = []
 
+
   def run(self):
-    while True:
-      self.get_submissions()
-      time.sleep(2)
+    self.check_new_submissions()
+    # while True:
+    #   self.check_new_submissions()
+    #   time.sleep(2)
 
-  def get_submissions(self): 
-      submissions = self.reddit.subreddit(self.subreddit_name).new(limit=25)
-      diff_ids = self.get_different_ids(self.get_submission_ids(submissions))
 
-      if diff_ids != self.prev_post_ids:
-        print(diff_ids)
-        self.prev_post_ids = diff_ids
+  def check_new_submissions(self): 
+      submissions = self.get_submissions()
+      new_submission_ids = self.get_submission_ids(submissions)
+      diff_ids = self.get_different_ids(new_submission_ids)
+
+      if len(diff_ids) and diff_ids != self.prev_post_ids:
+        for submission in self.filter_new_submissions(diff_ids, submissions):
+          self.process_url(submission)
+
+        self.prev_post_ids = new_submission_ids
       else: 
         print('no changes in id')
   
 
+  def get_submissions(self): 
+    return list(self.reddit.subreddit(self.subreddit_name).new(limit=25))
+
+
   def get_submission_ids(self, submissions):
     return list(map(lambda submission: submission.id, submissions))
 
+
   def get_different_ids(self, new_submission_ids):
-    return list(set(self.prev_post_ids) - set(new_submission_ids))
+    return list(set(new_submission_ids) - set(self.prev_post_ids))
+
+
+  def filter_new_submissions(self, diff_ids, submissions):
+    return list(filter(lambda submission: submission.id in diff_ids, submissions))
+
+
+  def process_url(self, submission):
+    if SiteRegex.is_amazon_product_url(submission.url): 
+        if self.is_posted(submission): 
+          return
+
+        submission.reply('Beep Boop This is the lurker bot. I noticed you posted an amazon url. Please do not reply.')
+
+    
+  def is_posted(self, submission):
+    top_level_comments = list(submission.comments)
+    comment_authors = list(map(lambda sub: sub.author, top_level_comments))
+    
+    return self.config['username'] in comment_authors
 
   # For credential testing
   def is_logged_in(self):
