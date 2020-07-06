@@ -14,7 +14,6 @@ class LurkerBotBeta:
 
     self.config = config
     self.subreddit_name = subreddit_name
-    self.prev_post_ids = []
 
 
   def run(self):
