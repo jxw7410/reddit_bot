@@ -1,5 +1,4 @@
 import praw
-import time
 
 from services.SiteRegex import SiteRegex
 from services.SubParser import SubParser
